@@ -61,13 +61,13 @@ void free_file_info(FileInfo *file)
 //                  $E000-$FFFF = ROM or extended memory
 // For RetroAchievements, we want $D000-$FFFF to only be the extended memory
 
-static unsigned char MainRAMReader(size_t nOffs)
+static unsigned char MainRAMReader(unsigned int nOffs)
 {
     assert(nOffs <= 0xFFFF);
     return *MemGetMainPtr((WORD)nOffs);
 }
 
-static void MainRAMWriter(size_t nOffs, unsigned char nVal)
+static void MainRAMWriter(unsigned int nOffs, unsigned char nVal)
 {
     assert(nOffs <= 0xFFFF);
     memdirty[nOffs >> 8] |= 1;
@@ -75,13 +75,13 @@ static void MainRAMWriter(size_t nOffs, unsigned char nVal)
 }
 
 #if RA_ENABLE_AUXRAM
-static unsigned char AuxRAMReader(size_t nOffs)
+static unsigned char AuxRAMReader(unsigned int nOffs)
 {
     assert(nOffs <= 0xFFFF);
     return *MemGetAuxPtr((WORD)nOffs);
 }
 
-static void AuxRAMWriter(size_t nOffs, unsigned char nVal)
+static void AuxRAMWriter(unsigned int nOffs, unsigned char nVal)
 {
     assert(nOffs <= 0xFFFF);
     *MemGetAuxPtr((WORD)nOffs) = nVal;
@@ -499,5 +499,8 @@ void RA_ProcessOverlayKey(int wparam, int down)
         break;
     }
 }
+
+typedef unsigned char (RA_ReadMemoryFunc)(unsigned int nAddress);
+typedef void (RA_WriteMemoryFunc)(unsigned int nAddress, unsigned char nValue);
 
 #endif
